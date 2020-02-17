@@ -3,30 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Persistence.Migrations
 {
-    public partial class ActivityEntityAdded : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DeleteData(
-                table: "Values",
-                keyColumn: "Id",
-                keyValue: 1);
-
-            migrationBuilder.DeleteData(
-                table: "Values",
-                keyColumn: "Id",
-                keyValue: 2);
-
-            migrationBuilder.DeleteData(
-                table: "Values",
-                keyColumn: "Id",
-                keyValue: 3);
-
-            migrationBuilder.DeleteData(
-                table: "Values",
-                keyColumn: "Id",
-                keyValue: 4);
-
             migrationBuilder.CreateTable(
                 name: "Activities",
                 columns: table => new
@@ -45,7 +25,7 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Denemes",
+                name: "Values",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -54,7 +34,7 @@ namespace Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Denemes", x => x.Id);
+                    table.PrimaryKey("PK_Values", x => x.Id);
                 });
         }
 
@@ -64,18 +44,7 @@ namespace Persistence.Migrations
                 name: "Activities");
 
             migrationBuilder.DropTable(
-                name: "Denemes");
-
-            migrationBuilder.InsertData(
-                table: "Values",
-                columns: new[] { "Id", "Name" },
-                values: new object[,]
-                {
-                    { 1, "Güven Uysal" },
-                    { 2, "Tuncay Kurt" },
-                    { 3, "Alparslan Şen" },
-                    { 4, "Özgür Yurtseven" }
-                });
+                name: "Values");
         }
     }
 }

@@ -29,14 +29,8 @@ class App extends Component {
             ))}
           </List>
         }
-          <Icon name="users"></Icon>
-          <Header.Content>Reactivities</Header.Content>
-        </Header>
-        <List>
-          {this.state.values.map((value: any) => (
-            <List.Item key={value.id} >{value.name}</List.Item>
-          ))}
-        </List>
+    
+
       </div>
     );
   }
