@@ -1,5 +1,8 @@
+using Application.Activities;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,11 +26,13 @@ namespace API
             services.AddDbContext<DataContext>(opt =>
             {
                 opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-                
+
             });
 
-            services.AddCors(opt=>{
-                opt.AddPolicy("CorsPolicy",policy=>{
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy", policy =>
+                {
                     policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
                 });
             });
@@ -39,8 +44,8 @@ namespace API
               policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
           });
       });
-
-            services.AddControllers();
+            services.AddMediatR(typeof(List.Handler).Assembly);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
