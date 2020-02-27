@@ -10,8 +10,7 @@ namespace Application.Activities
     public class Details
     {
         public class Query:IRequest<Activity>
-        {
-            public Guid Id { get; set; }
+        {            public Guid Id { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, Activity>
