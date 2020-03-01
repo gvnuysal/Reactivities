@@ -1,13 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, FormEvent } from "react";
 import { Segment, Form, Button } from "semantic-ui-react";
 import { IActivity } from "../../../app/models/activity";
+import {v4 as uuid} from 'uuid';
 interface IProps {
   setEditMode: (editMode: boolean) => void;
   activity: IActivity | null;
+  createActivity: (activity: IActivity) => void;
+  editActivity: (activity: IActivity) => void;
 }
 const ActivityForm: React.FC<IProps> = ({
   setEditMode,
-  activity: initializeFormState
+  activity: initializeFormState,
+  createActivity,
+  editActivity
 }) => {
   const initializeForm = () => {
     if (initializeFormState) {
@@ -26,32 +31,52 @@ const ActivityForm: React.FC<IProps> = ({
   };
 
   const [activity, setactivity] = useState<IActivity>(initializeForm);
-  const handleInputChange = (event: any) => {
-    setactivity({ ...activity, title: event.target.value });
+  const handleInputChange = (event: FormEvent<HTMLInputElement|HTMLTextAreaElement>) => {
+    const { name, value } = event.currentTarget;
+    setactivity({ ...activity, [name]: value });
   };
+  const handleSubmit=()=>{
+    if(activity.id.length===0){
+      let newActivity={
+        ...activity,
+        id: uuid()
+      };
+      createActivity(newActivity);
+    }
+    else{
+      editActivity(activity);
+    }
+  }
   return (
     <Segment clearing>
-      <Form>
+      <Form onSubmit={handleSubmit} >
         <Form.Input
           placeholder="Title"
+          name="title"
           onChange={handleInputChange}
           value={activity.title}
         ></Form.Input>
         <Form.TextArea
+        onChange={handleInputChange}
+        name='description'
           placeholder="Description"
           value={activity.description}
         ></Form.TextArea>
         <Form.Input
+name='category'        
           placeholder="Category"
+          onChange={handleInputChange}
           value={activity.category}
         ></Form.Input>
         <Form.Input
-          type="date"
+        name='date'
+        onChange={handleInputChange}
+          type="datetime-local"
           placeholder="Date"
           value={activity.date}
         ></Form.Input>
-        <Form.Input placeholder="City" value={activity.city}></Form.Input>
-        <Form.Input placeholder="Venue" value={activity.venue}></Form.Input>
+        <Form.Input name='city' placeholder="City" onChange={handleInputChange} value={activity.city}></Form.Input>
+        <Form.Input name='venue'  placeholder="Venue" onChange={handleInputChange} value={activity.venue}></Form.Input>
         <Button
           floated="right"
           positive
