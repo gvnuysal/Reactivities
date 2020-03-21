@@ -43,7 +43,7 @@ namespace Application.Activities
 
 
 
-                if (success) return Unit.Value;
+                  return Unit.Value;
 
                 throw new Exception("Problem saving chnages");
             }
