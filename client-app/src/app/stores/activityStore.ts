@@ -6,7 +6,7 @@ configure({ enforceActions: "always" });
 class ActivityStore {
   @observable activityRegistry = new Map();
   @observable activities: IActivity[] = [];
-  @observable selectedActivity: IActivity | undefined;
+  @observable activity: IActivity | undefined;
   @observable editMode = false;
   @observable loadingInitial = false;
   @observable submiting = false;
@@ -36,6 +36,31 @@ class ActivityStore {
       });
     }
   };
+
+  @action loadActivity = async (id: string) => {
+    let activty = this.getActivity(id);
+    if (activty) {
+      this.activity = activty;
+    } else {
+      this.loadingInitial = true;
+      try {
+        activty = await agent.Activities.details(id);
+        runInAction("gettingActivity", () => {
+          this.activity = activty;
+          this.loadingInitial = false;
+        });
+      } catch (error) {
+        runInAction("get activty error", () => {
+          this.loadingInitial = false;
+        });
+        this.loadingInitial = false;
+      }
+    }
+  };
+  getActivity = (id: string) => {
+    return this.activityRegistry.get(id);
+  };
+
   @action createActivity = async (activity: IActivity) => {
     this.submiting = true;
     try {
@@ -58,7 +83,7 @@ class ActivityStore {
       await agent.Activities.update(activity);
       runInAction("edit activity", () => {
         this.activityRegistry.set(activity.id, activity);
-        this.selectedActivity = activity;
+        this.activity = activity;
         this.editMode = false;
         this.submiting = false;
       });
@@ -76,36 +101,36 @@ class ActivityStore {
     this.target = event.currentTarget.name;
     try {
       await agent.Activities.del(id);
-      runInAction('delete activity',()=>{
+      runInAction("delete activity", () => {
         this.activityRegistry.delete(id);
         this.submiting = false;
         this.target = "";
-      })
+      });
     } catch (error) {
-      runInAction('delete activity error',()=>{
+      runInAction("delete activity error", () => {
         this.submiting = false;
         this.target = "";
-      })
+      });
     }
   };
 
   @action openCreateForm = () => {
     this.editMode = true;
-    this.selectedActivity = undefined;
+    this.activity = undefined;
   };
   @action openEditForm = (id: string) => {
-    this.selectedActivity = this.activityRegistry.get(id);
+    this.activity = this.activityRegistry.get(id);
     this.editMode = true;
   };
   @action cancelSelectedActivity = () => {
-    this.selectedActivity = undefined;
+    this.activity = undefined;
   };
   @action cancelFormOpen = () => {
     this.editMode = false;
   };
   @action selectActivity = (id: string) => {
     //this.selectedActivity = this.activities.find(a => a.id === id);
-    this.selectedActivity = this.activityRegistry.get(id);
+    this.activity = this.activityRegistry.get(id);
     this.editMode = false;
   };
 }
