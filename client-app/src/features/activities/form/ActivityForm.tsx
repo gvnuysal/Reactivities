@@ -1,35 +1,50 @@
-import React, { useState, FormEvent, useContext } from "react";
+import React, { useState, FormEvent, useContext, useEffect } from "react";
 import { Segment, Form, Button } from "semantic-ui-react";
 import { IActivity } from "../../../app/models/activity";
 import { v4 as uuid } from "uuid";
 import ActivivityStore from "../../../app/stores/activityStore";
 import { observer } from "mobx-react-lite";
-interface IProps {
-  activity: IActivity | undefined;
-}
-const ActivityForm: React.FC<IProps> = ({
-  activity: initializeFormState
-}) => {
-  const activityStore=useContext(ActivivityStore);
-  const {createActivity,editActivity,submiting,cancelFormOpen}=activityStore;
-  const initializeForm = () => {
-    if (initializeFormState) {
-      return initializeFormState;
-    } else {
-      return {
-        id: "",
-        title: "",
-        category: "",
-        description: "",
-        date: "",
-        city: "",
-        venue: ""
-      };
-    }
-  };
+import { RouteComponentProps } from "react-router-dom";
 
-  const [activity, setactivity] = useState<IActivity>(initializeForm);
-  
+interface DetailParams {
+  id: string;
+}
+
+const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
+  match,
+}) => {
+  const activityStore = useContext(ActivivityStore);
+  const {
+    createActivity,
+    editActivity,
+    submiting,
+    cancelFormOpen,
+    activity: initializeFormState,
+    loadActivity,
+    clearActivity,
+  } = activityStore;
+
+  useEffect(() => {
+    if (match.params.id) {
+      loadActivity(match.params.id).then(
+        () => initializeFormState && setactivity(initializeFormState)
+      );
+    }
+    return () => {
+      clearActivity();
+    };
+  }, [loadActivity, match.params.id, clearActivity, initializeFormState]);
+
+  const [activity, setactivity] = useState<IActivity>({
+    id: "",
+    title: "",
+    category: "",
+    description: "",
+    date: "",
+    city: "",
+    venue: ""
+  });
+
   const handleInputChange = (
     event: FormEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -40,7 +55,7 @@ const ActivityForm: React.FC<IProps> = ({
     if (activity.id.length === 0) {
       let newActivity = {
         ...activity,
-        id: uuid()
+        id: uuid(),
       };
       createActivity(newActivity);
     } else {
