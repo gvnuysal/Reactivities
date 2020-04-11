@@ -19,7 +19,6 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
     createActivity,
     editActivity,
     submiting,
-    cancelFormOpen,
     activity: initializeFormState,
     loadActivity,
     clearActivity,
@@ -111,7 +110,7 @@ const ActivityForm: React.FC<RouteComponentProps<DetailParams>> = ({
           content="KAYDET"
         ></Button>
         <Button
-          onClick={cancelFormOpen}
+          onClick={()=>history.push('/activities')}
           floated="right"
           type="button"
           content="VAZGEÇ"

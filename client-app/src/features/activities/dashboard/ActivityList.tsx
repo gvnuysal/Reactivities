@@ -3,45 +3,16 @@ import { Item, Button, Label, Segment } from "semantic-ui-react";
 import { observer } from "mobx-react-lite";
 import ActivityStore from "../../../app/stores/activityStore";
 import { Link } from "react-router-dom";
+import ActivityListItem from "./AcrtvityListItem";
 
-const ActivityList: React.FC= () => {
-  const activityStore=useContext(ActivityStore);
-  const {activitiesByDate,deleteActivity,submiting,target}=activityStore;
+const ActivityList: React.FC = () => {
+  const activityStore = useContext(ActivityStore);
+  const { activitiesByDate} = activityStore;
   return (
     <Segment clearing>
       <Item.Group divided>
-        {activitiesByDate.map(activity => (
-          <Item key={activity.id}>
-            <Item.Content>
-              <Item.Header as="a"> {activity.title} </Item.Header>
-              <Item.Meta> {activity.date} </Item.Meta>
-              <Item.Description>
-                <div> {activity.description} </div>
-                <div>
-                  {" "}
-                  {activity.city}, {activity.venue}{" "}
-                </div>
-              </Item.Description>
-              <Item.Extra>
-                <Button
-                  floated="right"
-                  as={Link}
-                  to={`/activities/${activity.id}`}
-                  content="GÖZAT"
-                  color="blue"
-                ></Button>
-                 <Button
-                 name={activity.id}
-                  loading={target===activity.id && submiting}
-                  floated="right"
-                  onClick={(e) => deleteActivity(e,activity.id)}
-                  content="SİL"
-                  color="red"
-                ></Button>
-                <Label basic content={activity.category}></Label>
-              </Item.Extra>
-            </Item.Content>
-          </Item>
+        {activitiesByDate.map((activity) => (
+          <ActivityListItem activity={activity} key={activity.id} ></ActivityListItem>
         ))}
       </Item.Group>
     </Segment>
