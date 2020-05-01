@@ -1,5 +1,4 @@
 import React from 'react'
-import { S_IFBLK } from 'constants'
 import { Segment, Image, Item, Header, Button } from 'semantic-ui-react'
 import { IActivity } from '../../../app/models/activity';
 import { observer } from 'mobx-react-lite';
