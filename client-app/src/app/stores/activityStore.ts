@@ -67,7 +67,7 @@ class ActivityStore {
         runInAction("get activty error", () => {
           this.loadingInitial = false;
         });
-        this.loadingInitial = false;
+       throw error;
       }
     }
   };
